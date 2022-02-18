@@ -24,13 +24,12 @@ export default function UploadContainer({ $target, initialState, onChange }) {
     const fileReader = new FileReader();
     fileReader.readAsText(files[0]);
     fileReader.onload = () => {
-      console.log(fileReader.result);
-      console.log(makeJSON(JSON.parse(fileReader.result)));
+      onChange(makeObject(JSON.parse(fileReader.result)));
     };
   });
 }
 
-function makeJSON(fileObj) {
+function makeObject(fileObj) {
   const jsonObj = {};
   for (const [key, value] of Object.entries(fileObj)) {
     const split_list = key.split('.');
