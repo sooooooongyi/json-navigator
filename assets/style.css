@@ -4,12 +4,18 @@
 }
 
 #app {
+  padding: 24px;
+  width: 100%;
+}
+
+section,
+ul {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  padding: 24px;
+  width: 100%;
 }
 
 #input-label {
@@ -27,6 +33,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 24px;
 }
 
 #input-label:hover {
@@ -36,5 +43,21 @@
 }
 
 .list-item {
+  display: block;
+  width: 100%;
   list-style: none;
+}
+
+.list-text {
+  width: 100%;
+  font-size: 24px;
+  border: 2px #000000 solid;
+  border-radius: 12px;
+  background-color: #f5f5f5;
+  padding: 4px 12px;
+  margin: 2px;
+}
+
+#list-container {
+  align-items: flex-start;
 }

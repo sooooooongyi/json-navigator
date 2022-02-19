@@ -1,5 +1,6 @@
 export default function ListContainer({ $target, initialState, onChange }) {
   const $listContainer = document.createElement('section');
+  $listContainer.id = 'list-container';
   $target.appendChild($listContainer);
   this.state = initialState;
 
@@ -13,8 +14,8 @@ export default function ListContainer({ $target, initialState, onChange }) {
       ${Object.entries(this.state.jsonObj)
         .map(([key]) =>
           this.state.jsonObj[key].isClosed
-            ? `<li class="list-item" data-key=${key}><span class="list-toggle">▶︎</span>${key}</li>`
-            : `<li class="list-item" data-key=${key}><span class="list-toggle">▼</span>${key}${makeSubList(
+            ? `<li class="list-item" data-key=${key}><div class='list-text'><span class="list-toggle">▶︎</span>${key}</div></li>`
+            : `<li class="list-item" data-key=${key}><div class='list-text'><span class="list-toggle">▼</span>${key}</div>${makeSubList(
                 this.state.jsonObj[key],
                 key
               )}</li>`
@@ -27,17 +28,17 @@ export default function ListContainer({ $target, initialState, onChange }) {
   const makeSubList = (jsonObj, prefix) => {
     let temp = '<ul>';
     if ('value' in jsonObj) {
-      temp += `<li class="list-item" data-item=${jsonObj.value}>${jsonObj.value}</li></ul>`;
+      temp += `<li class="list-item" data-item=${jsonObj.value}><div class='list-text'>${jsonObj.value}</div></li></ul>`;
       return temp;
     }
     for (const key of Object.keys(jsonObj)) {
       if (key === 'isClosed') continue;
       let newPrefix = `${prefix}.${key}`;
       if (!jsonObj[key].isClosed) {
-        temp += `<li class="list-item" data-key=${newPrefix}><span class="list-toggle">▼</span>${key}`;
+        temp += `<li class="list-item" data-key=${newPrefix}><div class='list-text'><span class="list-toggle">▼</span>${key}</div>`;
         temp += makeSubList(jsonObj[key], newPrefix) + '</li>';
       } else {
-        temp += `<li class="list-item" data-key=${newPrefix}><span class="list-toggle">▶︎</span>${key}</li>`;
+        temp += `<li class="list-item" data-key=${newPrefix}><div class='list-text'><span class="list-toggle">▶︎</span>${key}</div></li>`;
       }
     }
     temp += '</ul>';
