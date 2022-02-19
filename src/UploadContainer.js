@@ -1,5 +1,5 @@
 export default function UploadContainer({ $target, initialState, onChange }) {
-  const $uploadContainer = document.createElement('div');
+  const $uploadContainer = document.createElement('section');
   $target.appendChild($uploadContainer);
   this.state = initialState;
 

@@ -1,5 +1,5 @@
 export default function ListContainer({ $target, initialState, onChange }) {
-  const $listContainer = document.createElement('div');
+  const $listContainer = document.createElement('section');
   $target.appendChild($listContainer);
   this.state = initialState;
 
@@ -23,6 +23,7 @@ export default function ListContainer({ $target, initialState, onChange }) {
     </ul>`;
   };
 
+  // isClosed 값에 따라 재귀적으로 서브리스트를 만드는 함수
   const makeSubList = (jsonObj, prefix) => {
     let temp = '<ul>';
     if ('value' in jsonObj) {

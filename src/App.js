@@ -2,12 +2,6 @@ import UploadContainer from './UploadContainer.js';
 import ListContainer from './ListContainer.js';
 
 export default function App({ $target }) {
-  const $uploadSection = document.createElement('section');
-  const $listSection = document.createElement('section');
-
-  $target.appendChild($uploadSection);
-  $target.appendChild($listSection);
-
   this.state = {
     jsonObj: null
   };
@@ -18,7 +12,7 @@ export default function App({ $target }) {
   };
 
   const uploadContainer = new UploadContainer({
-    $target: $uploadSection,
+    $target: $target,
     initialState: {},
     onChange: (jsonObj) => {
       this.setState({ jsonObj });
@@ -26,7 +20,7 @@ export default function App({ $target }) {
   });
 
   const listContainer = new ListContainer({
-    $target: $listSection,
+    $target: $target,
     initialState: {},
     onChange: (nextState) => {
       this.setState(nextState);
