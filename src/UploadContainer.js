@@ -36,10 +36,15 @@ function makeObject(fileObj) {
     let temp = jsonObj;
     for (const [index, property] of split_list.entries()) {
       if (index === split_list.length - 1) {
-        temp[property] = value;
+        temp[property] = {
+          value,
+          isClosed: true
+        };
       } else {
         if (!temp[property]) {
-          temp[property] = {};
+          temp[property] = {
+            isClosed: true
+          };
         }
         temp = temp[property];
       }

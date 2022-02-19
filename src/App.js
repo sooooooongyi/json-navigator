@@ -4,6 +4,7 @@ import ListContainer from './ListContainer.js';
 export default function App({ $target }) {
   const $uploadSection = document.createElement('section');
   const $listSection = document.createElement('section');
+
   $target.appendChild($uploadSection);
   $target.appendChild($listSection);
 
@@ -26,6 +27,9 @@ export default function App({ $target }) {
 
   const listContainer = new ListContainer({
     $target: $listSection,
-    initialState: {}
+    initialState: {},
+    onChange: (nextState) => {
+      this.setState(nextState);
+    }
   });
 }

@@ -1,4 +1,4 @@
-export default function ListContainer({ $target, initialState }) {
+export default function ListContainer({ $target, initialState, onChange }) {
   const $listContainer = document.createElement('div');
   $target.appendChild($listContainer);
   this.state = initialState;
@@ -11,34 +11,44 @@ export default function ListContainer({ $target, initialState }) {
   this.render = () => {
     $listContainer.innerHTML = `<ul>
       ${Object.entries(this.state.jsonObj)
-        .map(
-          ([key]) =>
-            `<li class="list-item" data-key=${key}><span class="list-toggle">►</span>${key}</li>`
+        .map(([key]) =>
+          this.state.jsonObj[key].isClosed
+            ? `<li class="list-item" data-key=${key}><span class="list-toggle">▶︎</span>${key}</li>`
+            : `<li class="list-item" data-key=${key}><span class="list-toggle">▼</span>${key}${makeSubList(
+                this.state.jsonObj[key],
+                key
+              )}</li>`
         )
         .join('')}
     </ul>`;
   };
 
-  // 전달받은 key의 최상단 자식들로 <ul><li>...</li></ul>로 만드는 함수
-  const makeSubTree = (key) => {
-    let subTree = '';
-    const { subObj } = findKey('', this.state.jsonObj, key);
-    if (subObj instanceof Object) {
-      for (const property of Object.keys(subObj)) {
-        subTree += `<li class="list-item" data-key=${key}.${property}><span class="list-toggle">►</span>${property}</li>`;
-      }
-    } else {
-      subTree += `<li class="list-item" data-item=${key}>${subObj}</li>`;
+  const makeSubList = (jsonObj, prefix) => {
+    let temp = '<ul>';
+    if ('value' in jsonObj) {
+      temp += `<li class="list-item" data-item=${jsonObj.value}>${jsonObj.value}</li></ul>`;
+      return temp;
     }
-    return subTree;
+    for (const key of Object.keys(jsonObj)) {
+      if (key === 'isClosed') continue;
+      let newPrefix = `${prefix}.${key}`;
+      if (!jsonObj[key].isClosed) {
+        temp += `<li class="list-item" data-key=${newPrefix}><span class="list-toggle">▼</span>${key}`;
+        temp += makeSubList(jsonObj[key], newPrefix) + '</li>';
+      } else {
+        temp += `<li class="list-item" data-key=${newPrefix}><span class="list-toggle">▶︎</span>${key}</li>`;
+      }
+    }
+    temp += '</ul>';
+    return temp;
   };
 
-  // key의 최상단 자식들의 객체 또는 값을 얻는 함수
+  // key의 최상단 자식들의 객체를 얻는 함수
   const findKey = (prefix, temp, key) => {
     const keys = Object.keys(temp);
     for (const property of keys) {
       if (prefix + property === key) {
-        return { subObj: temp[property] };
+        return temp[property];
       } else if (key.split('.').includes(property)) {
         const nextPrefix = `${prefix}${property}.`;
         return findKey(nextPrefix, temp[property], key);
@@ -50,21 +60,12 @@ export default function ListContainer({ $target, initialState }) {
 
   $listContainer.addEventListener('click', (e) => {
     const $clickedList = e.target.closest('.list-item');
-
     const { key } = $clickedList.dataset;
+
     if (!key) return;
 
-    if ($clickedList.classList.contains('isOpened')) {
-      $clickedList.firstChild.innerHTML = '►';
-      $clickedList.removeChild($clickedList.lastChild);
-      $clickedList.classList.remove('isOpened');
-    } else {
-      const $subList = document.createElement('ul');
-
-      $clickedList.firstChild.innerHTML = '▼';
-      $subList.innerHTML = makeSubTree(key);
-      $clickedList.classList.add('isOpened');
-      $clickedList.appendChild($subList);
-    }
+    const newObj = findKey('', this.state.jsonObj, key);
+    newObj.isClosed = !newObj.isClosed;
+    onChange(this.state);
   });
 }
