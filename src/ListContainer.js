@@ -11,7 +11,10 @@ export default function ListContainer({ $target, initialState }) {
   this.render = () => {
     $listContainer.innerHTML = `<ul>
       ${Object.entries(this.state.jsonObj)
-        .map(([key]) => `<li class="list-item" data-key=${key}>▶︎${key}</li>`)
+        .map(
+          ([key]) =>
+            `<li class="list-item" data-key=${key}><span class="list-toggle">►</span>${key}</li>`
+        )
         .join('')}
     </ul>`;
   };
@@ -22,7 +25,7 @@ export default function ListContainer({ $target, initialState }) {
     const { subObj } = findKey('', this.state.jsonObj, key);
     if (subObj instanceof Object) {
       for (const property of Object.keys(subObj)) {
-        subTree += `<li class="list-item" data-key=${key}.${property}>▶︎${property}</li>`;
+        subTree += `<li class="list-item" data-key=${key}.${property}><span class="list-toggle">►</span>${property}</li>`;
       }
     } else {
       subTree += `<li class="list-item" data-item=${key}>${subObj}</li>`;
@@ -52,10 +55,13 @@ export default function ListContainer({ $target, initialState }) {
     if (!key) return;
 
     if ($clickedList.classList.contains('isOpened')) {
+      $clickedList.firstChild.innerHTML = '►';
       $clickedList.removeChild($clickedList.lastChild);
       $clickedList.classList.remove('isOpened');
     } else {
       const $subList = document.createElement('ul');
+
+      $clickedList.firstChild.innerHTML = '▼';
       $subList.innerHTML = makeSubTree(key);
       $clickedList.classList.add('isOpened');
       $clickedList.appendChild($subList);
