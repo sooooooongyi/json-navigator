@@ -34,3 +34,7 @@
   background-color: #ffffff;
   border: 2px solid #000000;
 }
+
+.list-item {
+  list-style: none;
+}
