@@ -18,6 +18,10 @@ ul {
   width: 100%;
 }
 
+#root-list {
+  padding: 0;
+}
+
 #input-label {
   display: block;
 
@@ -50,7 +54,7 @@ ul {
 
 .list-text {
   width: 100%;
-  font-size: 24px;
+  font-size: 1.5rem;
   border: 2px #000000 solid;
   border-radius: 12px;
   background-color: #f5f5f5;
@@ -60,4 +64,5 @@ ul {
 
 #list-container {
   align-items: flex-start;
+  cursor: pointer;
 }

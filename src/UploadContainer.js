@@ -1,4 +1,10 @@
-export default function UploadContainer({ $target, initialState, onChange }) {
+import { uploadComponent } from '../assets/constants.js';
+
+export default function UploadContainer({
+  $target,
+  initialState = {},
+  onFileChange
+}) {
   const $uploadContainer = document.createElement('section');
   $target.appendChild($uploadContainer);
   this.state = initialState;
@@ -9,47 +15,43 @@ export default function UploadContainer({ $target, initialState, onChange }) {
   };
 
   this.render = () => {
-    $uploadContainer.innerHTML = `
-      <label id="input-label" for="input-file">
-        Upload JSON
-      </label>
-      <input type="file" id="input-file" accept=".json" style="display:none;">
-    `;
+    $uploadContainer.insertAdjacentHTML('afterbegin', uploadComponent);
   };
 
   this.render();
+
+  // .으로 표현된 계층관계를 obj으로 바꾸는 함수
+  const makeObject = (fileObj) => {
+    const jsonObj = {};
+    for (const [key, value] of Object.entries(fileObj)) {
+      const splitList = key.split('.');
+      let temp = jsonObj;
+      for (const [index, property] of splitList.entries()) {
+        if (index === splitList.length - 1) {
+          temp[property] = {
+            value,
+            isClosed: true
+          };
+        } else {
+          if (!temp[property]) {
+            temp[property] = {
+              isClosed: true
+            };
+          }
+          temp = temp[property];
+        }
+      }
+    }
+    return jsonObj;
+  };
 
   $uploadContainer.addEventListener('change', (e) => {
     const { files } = e.target;
     const fileReader = new FileReader();
     fileReader.readAsText(files[0]);
     fileReader.onload = () => {
-      onChange(makeObject(JSON.parse(fileReader.result)));
+      const fileObj = JSON.parse(fileReader.result);
+      onFileChange(makeObject(fileObj));
     };
   });
-}
-
-// .으로 표현된 계층관계를 obj으로 바꾸는 함수
-function makeObject(fileObj) {
-  const jsonObj = {};
-  for (const [key, value] of Object.entries(fileObj)) {
-    const split_list = key.split('.');
-    let temp = jsonObj;
-    for (const [index, property] of split_list.entries()) {
-      if (index === split_list.length - 1) {
-        temp[property] = {
-          value,
-          isClosed: true
-        };
-      } else {
-        if (!temp[property]) {
-          temp[property] = {
-            isClosed: true
-          };
-        }
-        temp = temp[property];
-      }
-    }
-  }
-  return jsonObj;
 }
