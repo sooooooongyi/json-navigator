@@ -60,13 +60,23 @@ export default function ListContainer({ $target, initialState, onChange }) {
     }
   };
 
+  // 자식의 isClosed를 모두 true로 만드는 함수
+  const setChildTrue = (childObj) => {
+    for (const property of Object.keys(childObj)) {
+      if (childObj[property] instanceof Object) {
+        childObj[property].isClosed = true;
+      }
+    }
+    return childObj;
+  };
+
   $listContainer.addEventListener('click', (e) => {
     const $clickedList = e.target.closest('.list-item');
     const { key } = $clickedList.dataset;
 
     if (!key) return;
 
-    const newObj = findKey('', this.state.jsonObj, key);
+    const newObj = setChildTrue(findKey('', this.state.jsonObj, key));
     newObj.isClosed = !newObj.isClosed;
     onChange(this.state);
   });

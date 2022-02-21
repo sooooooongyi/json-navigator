@@ -29,6 +29,7 @@ export default function UploadContainer({ $target, initialState, onChange }) {
   });
 }
 
+// .으로 표현된 계층관계를 obj으로 바꾸는 함수
 function makeObject(fileObj) {
   const jsonObj = {};
   for (const [key, value] of Object.entries(fileObj)) {
